@@ -9,7 +9,7 @@ COPY . .
 
 RUN mkdir -p /app/data
 
-EXPOSE 6000
+EXPOSE 7500
 
 ENV DATA_DIR=/app/data
 

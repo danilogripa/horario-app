@@ -220,8 +220,20 @@
             margin-top: 6px;
             font-weight: 600;
         }
-        .ok     { color: #1a7a45; }
-        .falta  { color: #c0392b; }
+        .ok        { color: #1a7a45; }
+        .falta     { color: #c0392b; }
+        .excedente { color: #e67e00; }
+
+        /* Card total */
+        .card.total .card-title { color: #5a3ea8; }
+        .card.total .card-horas { color: #5a3ea8; }
+        .card.total .bar-fill   { background: #7c5cbf; }
+        .card-excedente {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            font-weight: 600;
+            color: #e67e00;
+        }
     </style>
 </head>
 <body>
@@ -271,6 +283,14 @@
         <div class="bar-bg"><div class="bar-fill" id="bar-professora" style="width:0%"></div></div>
         <div class="card-status" id="status-professora"></div>
     </div>
+    <div class="card total">
+        <div class="card-title">Total Geral</div>
+        <div class="card-horas" id="h-total">0:00</div>
+        <div class="card-meta">Meta: 42:30 h/semana</div>
+        <div class="bar-bg"><div class="bar-fill" id="bar-total" style="width:0%"></div></div>
+        <div class="card-status" id="status-total"></div>
+        <div class="card-excedente" id="excedente-total"></div>
+    </div>
 </div>
 
 <script>
@@ -295,8 +315,9 @@ const OPTIONS = [
     { label: 'ANNA BENEDICTA', role: 'ori'  },
 ];
 
-const META_ORI  = 20.0;
-const META_PROF = 22.5;
+const META_ORI   = 20.0;
+const META_PROF  = 22.5;
+const META_TOTAL = 42.5;
 
 let state = {};
 
@@ -439,6 +460,22 @@ function updateCards() {
     } else {
         statusProf.textContent = `Faltam ${toHM(META_PROF - prof)}`;
         statusProf.className = 'card-status falta';
+    }
+
+    const total = ori + prof;
+    document.getElementById('h-total').textContent   = toHM(total);
+    document.getElementById('bar-total').style.width = Math.min(total / META_TOTAL * 100, 100) + '%';
+    const statusTotal    = document.getElementById('status-total');
+    const excedenteTotal = document.getElementById('excedente-total');
+    if (total >= META_TOTAL) {
+        statusTotal.textContent = '✔ Meta atingida';
+        statusTotal.className   = 'card-status ok';
+        const excesso = total - META_TOTAL;
+        excedenteTotal.textContent = excesso > 0 ? `⚠ Excedente: ${toHM(excesso)}` : '';
+    } else {
+        statusTotal.textContent = `Faltam ${toHM(META_TOTAL - total)}`;
+        statusTotal.className   = 'card-status falta';
+        excedenteTotal.textContent = '';
     }
 }
 
