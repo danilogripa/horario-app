@@ -326,6 +326,7 @@
         <div class="card-meta">Meta: 20:00 h/semana</div>
         <div class="bar-bg"><div class="bar-fill" id="bar-orientadora" style="width:0%"></div></div>
         <div class="card-status" id="status-orientadora"></div>
+        <div class="card-excedente" id="excedente-orientadora"></div>
     </div>
     <div class="card verde">
         <div class="card-title">Professora</div>
@@ -333,6 +334,7 @@
         <div class="card-meta">Meta: 22:30 h/semana</div>
         <div class="bar-bg"><div class="bar-fill" id="bar-professora" style="width:0%"></div></div>
         <div class="card-status" id="status-professora"></div>
+        <div class="card-excedente" id="excedente-professora"></div>
     </div>
     <div class="card total">
         <div class="card-title">Total Geral</div>
@@ -519,24 +521,32 @@ function updateCards() {
 
     document.getElementById('h-orientadora').textContent   = toHM(ori);
     document.getElementById('bar-orientadora').style.width = Math.min(ori / META_ORI * 100, 100) + '%';
-    const statusOri = document.getElementById('status-orientadora');
+    const statusOri      = document.getElementById('status-orientadora');
+    const excedenteOri   = document.getElementById('excedente-orientadora');
     if (ori >= META_ORI) {
         statusOri.textContent = '✔ Meta atingida';
         statusOri.className = 'card-status ok';
+        const excessoOri = ori - META_ORI;
+        excedenteOri.textContent = excessoOri > 0 ? `⚠ Excedente: ${toHM(excessoOri)}` : '';
     } else {
         statusOri.textContent = `Faltam ${toHM(META_ORI - ori)}`;
         statusOri.className = 'card-status falta';
+        excedenteOri.textContent = '';
     }
 
     document.getElementById('h-professora').textContent   = toHM(prof);
     document.getElementById('bar-professora').style.width = Math.min(prof / META_PROF * 100, 100) + '%';
-    const statusProf = document.getElementById('status-professora');
+    const statusProf     = document.getElementById('status-professora');
+    const excedenteProf  = document.getElementById('excedente-professora');
     if (prof >= META_PROF) {
         statusProf.textContent = '✔ Meta atingida';
         statusProf.className = 'card-status ok';
+        const excessoProf = prof - META_PROF;
+        excedenteProf.textContent = excessoProf > 0 ? `⚠ Excedente: ${toHM(excessoProf)}` : '';
     } else {
         statusProf.textContent = `Faltam ${toHM(META_PROF - prof)}`;
         statusProf.className = 'card-status falta';
+        excedenteProf.textContent = '';
     }
 
     const total = ori + prof;
