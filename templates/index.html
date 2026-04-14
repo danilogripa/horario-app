@@ -234,6 +234,44 @@
             font-weight: 600;
             color: #e67e00;
         }
+
+        /* ── CONFIGURAÇÃO DE TURNOS ──────────────────────────── */
+        .config-turnos {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #fff;
+            border-radius: 10px;
+            padding: 14px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            margin-bottom: 18px;
+            font-size: 0.85rem;
+        }
+        .config-turnos label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        .config-turnos input[type=time] {
+            border: 1px solid #d0d4da;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            color: #333;
+            outline: none;
+            cursor: pointer;
+        }
+        .config-turnos input[type=time]:focus {
+            border-color: #4a90d9;
+        }
+        .config-turnos .config-hint {
+            font-size: 0.75rem;
+            color: #999;
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
@@ -255,6 +293,19 @@
         <span>Não atribuído</span>
     </div>
     <span class="legenda-info">Clique nas células para alternar entre os estados</span>
+</div>
+
+<!-- Configuração de turnos -->
+<div class="config-turnos">
+    <label>
+        Término da manhã:
+        <input type="time" id="fim-manha" value="11:30" step="300">
+    </label>
+    <label>
+        Início da tarde:
+        <input type="time" id="inicio-tarde" value="12:00" step="300">
+    </label>
+    <span class="config-hint">Manhã: 07:30 → configurável &nbsp;|&nbsp; Tarde: configurável → 17:00</span>
 </div>
 
 <!-- Tabela -->
@@ -295,11 +346,27 @@
 
 <script>
 const DAYS  = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
-const SLOTS = [
-    { label: '07:30 – 11:30', hours: 4.0,  htpc: false },
-    { label: '12:00 – 17:00', hours: 5.0,  htpc: false },
-    { label: '17:00 – 19:30', hours: 2.5,  htpc: true  },
-];
+// Slot fixo de HTPC
+const SLOT_HTPC = { label: '17:00 – 19:30', hours: 2.5, htpc: true };
+
+function timeToHours(hhmm) {
+    const [h, m] = hhmm.split(':').map(Number);
+    return h + m / 60;
+}
+
+function buildSlots() {
+    const fimManha    = document.getElementById('fim-manha').value    || '11:30';
+    const inicioTarde = document.getElementById('inicio-tarde').value || '12:00';
+    const hFimManha    = timeToHours(fimManha);
+    const hInicioTarde = timeToHours(inicioTarde);
+    return [
+        { label: `07:30 – ${fimManha}`,    hours: Math.max(0, hFimManha - 7.5),   htpc: false },
+        { label: `${inicioTarde} – 17:00`, hours: Math.max(0, 17 - hInicioTarde), htpc: false },
+        SLOT_HTPC,
+    ];
+}
+
+let SLOTS = buildSlots();
 
 // Opções: role 'ori' = orientadora (azul), 'prof' = professora (verde), null = vazio
 const OPTIONS = [
@@ -332,6 +399,16 @@ function isDisabled(si, di) {
 }
 
 function key(s, d) { return `${s}-${d}`; }
+
+function refreshAll() {
+    SLOTS = buildSlots();
+    buildTable();
+    SLOTS.forEach((_, si) => DAYS.forEach((_, di) => {
+        if (!isDisabled(si, di)) renderCell(si, di);
+    }));
+    updateCards();
+    saveState();
+}
 
 function buildTable() {
     const hr = document.getElementById('header-row');
@@ -479,25 +556,35 @@ function updateCards() {
     }
 }
 
-function saveState() {
-    fetch('/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state)
-    });
-}
+document.getElementById('fim-manha').addEventListener('change', refreshAll);
+document.getElementById('inicio-tarde').addEventListener('change', refreshAll);
 
 async function loadState() {
     try {
         const res = await fetch('/load');
         if (res.ok) {
             state = await res.json();
+            // Restaurar horários salvos
+            if (state.__fimManha)    document.getElementById('fim-manha').value    = state.__fimManha;
+            if (state.__inicioTarde) document.getElementById('inicio-tarde').value = state.__inicioTarde;
+            SLOTS = buildSlots();
+            buildTable();
             SLOTS.forEach((_, si) => DAYS.forEach((_, di) => {
                 if (!isDisabled(si, di)) renderCell(si, di);
             }));
             updateCards();
         }
     } catch(e) {}
+}
+
+function saveState() {
+    state.__fimManha    = document.getElementById('fim-manha').value;
+    state.__inicioTarde = document.getElementById('inicio-tarde').value;
+    fetch('/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+    });
 }
 
 buildTable();
