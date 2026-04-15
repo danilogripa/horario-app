@@ -22,11 +22,24 @@
             letter-spacing: 0.3px;
         }
 
+        /* ── SEÇÕES DE HORÁRIO ───────────────────────────────── */
+        .schedule-section {
+            margin-bottom: 44px;
+        }
+        .schedule-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #d0d4da;
+        }
+
         /* ── LEGENDA ─────────────────────────────────────────── */
         .legenda {
             display: flex;
             gap: 20px;
-            margin-bottom: 18px;
+            margin-bottom: 24px;
             font-size: 0.85rem;
             align-items: center;
         }
@@ -45,11 +58,6 @@
         .legenda-cor.azul   { background: #4a90d9; }
         .legenda-cor.verde  { background: #3dae6a; }
         .legenda-cor.vazio  { background: #fff; }
-        .legenda-info {
-            font-size: 0.78rem;
-            color: #777;
-            margin-left: 12px;
-        }
 
         /* ── TABELA ──────────────────────────────────────────── */
         .table-wrap { overflow-x: auto; }
@@ -171,6 +179,7 @@
         .card {
             flex: 1;
             min-width: 200px;
+            max-width: 360px;
             background: #fff;
             border-radius: 10px;
             padding: 16px 20px;
@@ -183,8 +192,7 @@
             letter-spacing: .6px;
             margin-bottom: 6px;
         }
-        .card.azul .card-title  { color: #1a5fa8; }
-        .card.verde .card-title { color: #1a7a45; }
+        .card.azul .card-title { color: #1a5fa8; }
 
         .card-horas {
             font-size: 1.6rem;
@@ -192,8 +200,7 @@
             line-height: 1.1;
             margin-bottom: 2px;
         }
-        .card.azul .card-horas  { color: #1a5fa8; }
-        .card.verde .card-horas { color: #1a7a45; }
+        .card.azul .card-horas { color: #1a5fa8; }
 
         .card-meta {
             font-size: 0.8rem;
@@ -212,8 +219,7 @@
             border-radius: 99px;
             transition: width .35s ease;
         }
-        .card.azul  .bar-fill { background: #4a90d9; }
-        .card.verde .bar-fill { background: #3dae6a; }
+        .card.azul .bar-fill { background: #4a90d9; }
 
         .card-status {
             font-size: 0.75rem;
@@ -224,10 +230,6 @@
         .falta     { color: #c0392b; }
         .excedente { color: #e67e00; }
 
-        /* Card total */
-        .card.total .card-title { color: #5a3ea8; }
-        .card.total .card-horas { color: #5a3ea8; }
-        .card.total .bar-fill   { background: #7c5cbf; }
         .card-excedente {
             font-size: 0.75rem;
             margin-top: 4px;
@@ -267,18 +269,13 @@
         .config-turnos input[type=time]:focus {
             border-color: #4a90d9;
         }
-        .config-turnos .config-hint {
-            font-size: 0.75rem;
-            color: #999;
-            margin-left: auto;
-        }
     </style>
 </head>
 <body>
 
 <h1>Organizador de Horários</h1>
 
-<!-- Legenda -->
+<!-- Legenda (compartilhada) -->
 <div class="legenda">
     <div class="legenda-item">
         <div class="legenda-cor azul"></div>
@@ -292,103 +289,86 @@
         <div class="legenda-cor vazio"></div>
         <span>Não atribuído</span>
     </div>
-    <span class="legenda-info">Clique nas células para alternar entre os estados</span>
 </div>
 
-<!-- Configuração de turnos -->
-<div class="config-turnos">
-    <label>
-        Término da manhã:
-        <input type="time" id="fim-manha" value="11:30" step="300">
-    </label>
-    <label>
-        Início da tarde:
-        <input type="time" id="inicio-tarde" value="12:00" step="300">
-    </label>
-    <span class="config-hint">Manhã: 07:30 → configurável &nbsp;|&nbsp; Tarde: configurável → 17:00</span>
-</div>
+<!-- ══ HORÁRIO 1 ══════════════════════════════════════════════ -->
+<div class="schedule-section">
+    <h2 class="schedule-title">Horário 1</h2>
 
-<!-- Tabela -->
-<div class="table-wrap">
-    <table id="tabela">
-        <thead>
-            <tr id="header-row"></tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-    </table>
-</div>
-
-<!-- Cards de horas -->
-<div class="cards">
-    <div class="card azul">
-        <div class="card-title">Orientadora Educacional</div>
-        <div class="card-horas" id="h-orientadora">0:00</div>
-        <div class="card-meta">Meta: 20:00 h/semana</div>
-        <div class="bar-bg"><div class="bar-fill" id="bar-orientadora" style="width:0%"></div></div>
-        <div class="card-status" id="status-orientadora"></div>
-        <div class="card-excedente" id="excedente-orientadora"></div>
+    <div class="config-turnos">
+        <label>Término da manhã: <input type="time" id="s1-fim-manha"    value="11:30" step="300"></label>
+        <label>Início da tarde:  <input type="time" id="s1-inicio-tarde" value="12:30" step="300"></label>
+        <label>Saída da tarde:   <input type="time" id="s1-fim-tarde"    value="17:00" step="300"></label>
     </div>
-    <div class="card verde">
-        <div class="card-title">Professora</div>
-        <div class="card-horas" id="h-professora">0:00</div>
-        <div class="card-meta">Meta: 22:30 h/semana</div>
-        <div class="bar-bg"><div class="bar-fill" id="bar-professora" style="width:0%"></div></div>
-        <div class="card-status" id="status-professora"></div>
-        <div class="card-excedente" id="excedente-professora"></div>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr id="s1-header-row"></tr></thead>
+            <tbody id="s1-tbody"></tbody>
+        </table>
     </div>
-    <div class="card total">
-        <div class="card-title">Total Geral</div>
-        <div class="card-horas" id="h-total">0:00</div>
-        <div class="card-meta">Meta: 42:30 h/semana</div>
-        <div class="bar-bg"><div class="bar-fill" id="bar-total" style="width:0%"></div></div>
-        <div class="card-status" id="status-total"></div>
-        <div class="card-excedente" id="excedente-total"></div>
+
+    <div class="cards">
+        <div class="card azul">
+            <div class="card-title">Orientadora Educacional</div>
+            <div class="card-horas" id="s1-h-ori">0:00</div>
+            <div class="card-meta">Meta: 20:00 h/semana</div>
+            <div class="bar-bg"><div class="bar-fill" id="s1-bar-ori" style="width:0%"></div></div>
+            <div class="card-status"    id="s1-status-ori"></div>
+            <div class="card-excedente" id="s1-excedente-ori"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ HORÁRIO 2 ══════════════════════════════════════════════ -->
+<div class="schedule-section">
+    <h2 class="schedule-title">Horário 2</h2>
+
+    <div class="config-turnos">
+        <label>Término da manhã: <input type="time" id="s2-fim-manha"    value="11:30" step="300"></label>
+        <label>Início da tarde:  <input type="time" id="s2-inicio-tarde" value="12:30" step="300"></label>
+        <label>Saída da tarde:   <input type="time" id="s2-fim-tarde"    value="17:00" step="300"></label>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr id="s2-header-row"></tr></thead>
+            <tbody id="s2-tbody"></tbody>
+        </table>
+    </div>
+
+    <div class="cards">
+        <div class="card azul">
+            <div class="card-title">Orientadora Educacional</div>
+            <div class="card-horas" id="s2-h-ori">0:00</div>
+            <div class="card-meta">Meta: 20:00 h/semana</div>
+            <div class="bar-bg"><div class="bar-fill" id="s2-bar-ori" style="width:0%"></div></div>
+            <div class="card-status"    id="s2-status-ori"></div>
+            <div class="card-excedente" id="s2-excedente-ori"></div>
+        </div>
     </div>
 </div>
 
 <script>
-const DAYS  = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
-// Slot fixo de HTPC
-const SLOT_HTPC = { label: '17:00 – 19:30', hours: 2.5, htpc: true };
+const DAYS    = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+const META_ORI = 20.0;
+
+const OPTIONS = [
+    { label: '—',              role: null   },
+    { label: 'Juventino',      role: 'prof' },
+    { label: 'HTPC',           role: 'prof' },
+    { label: 'Planej Casa',    role: 'prof' },
+    { label: 'JUVENTINO',      role: 'ori'  },
+    { label: 'ELEA TATAGIBA',  role: 'ori'  },
+    { label: 'CHRISTOS',       role: 'ori'  },
+    { label: 'ANNA BENEDICTA', role: 'ori'  },
+    { label: 'SEMED',          role: 'ori'  },
+];
 
 function timeToHours(hhmm) {
     const [h, m] = hhmm.split(':').map(Number);
     return h + m / 60;
 }
-
-function buildSlots() {
-    const fimManha    = document.getElementById('fim-manha').value    || '11:30';
-    const inicioTarde = document.getElementById('inicio-tarde').value || '12:00';
-    const hFimManha    = timeToHours(fimManha);
-    const hInicioTarde = timeToHours(inicioTarde);
-    return [
-        { label: `07:30 – ${fimManha}`,    hours: Math.max(0, hFimManha - 7.5),   htpc: false },
-        { label: `${inicioTarde} – 17:00`, hours: Math.max(0, 17 - hInicioTarde), htpc: false },
-        SLOT_HTPC,
-    ];
-}
-
-let SLOTS = buildSlots();
-
-// Opções: role 'ori' = orientadora (azul), 'prof' = professora (verde), null = vazio
-const OPTIONS = [
-    { label: '—',             role: null   },
-    // Professora
-    { label: 'Juventino',      role: 'prof' },
-    { label: 'HTPC',           role: 'prof' },
-    { label: 'Planej Casa',    role: 'prof' },
-    // Orientadora
-    { label: 'JUVENTINO',      role: 'ori'  },
-    { label: 'ELEA TATAGIBA',  role: 'ori'  },
-    { label: 'CHRISTOS',       role: 'ori'  },
-    { label: 'ANNA BENEDICTA', role: 'ori'  },
-];
-
-const META_ORI   = 20.0;
-const META_PROF  = 22.5;
-const META_TOTAL = 42.5;
-
-let state = {};
 
 function toHM(h) {
     const hrs  = Math.floor(h);
@@ -396,209 +376,214 @@ function toHM(h) {
     return `${hrs}:${String(mins).padStart(2, '0')}`;
 }
 
-function isDisabled(si, di) {
-    return SLOTS[si].htpc && di === 4;
-}
+function createSchedule(n) {
+    const p = `s${n}`;
+    let state = {};
+    let slots  = [];
 
-function key(s, d) { return `${s}-${d}`; }
+    function g(suffix) { return document.getElementById(`${p}-${suffix}`); }
+    function key(s, d)  { return `${s}-${d}`; }
 
-function refreshAll() {
-    SLOTS = buildSlots();
-    buildTable();
-    SLOTS.forEach((_, si) => DAYS.forEach((_, di) => {
-        if (!isDisabled(si, di)) renderCell(si, di);
-    }));
-    updateCards();
-    saveState();
-}
+    function buildSlots() {
+        const fimManha    = g('fim-manha').value    || '11:30';
+        const inicioTarde = g('inicio-tarde').value || '12:30';
+        const fimTarde    = g('fim-tarde').value    || '17:00';
+        slots = [
+            {
+                label: `07:30 – ${fimManha}`,
+                hours: Math.max(0, timeToHours(fimManha) - 7.5),
+                htpc:  false,
+            },
+            {
+                label: `${inicioTarde} – ${fimTarde}`,
+                hours: Math.max(0, timeToHours(fimTarde) - timeToHours(inicioTarde)),
+                htpc:  false,
+            },
+            { label: '17:00 – 19:30', hours: 2.5, htpc: true },
+        ];
+    }
 
-function buildTable() {
-    const hr = document.getElementById('header-row');
-    hr.innerHTML = '<th>Horário</th>';
-    DAYS.forEach(d => {
-        const th = document.createElement('th');
-        th.textContent = d;
-        hr.appendChild(th);
-    });
+    function isDisabled(si, di) {
+        return slots[si].htpc && di === 4;
+    }
 
-    const tbody = document.getElementById('tbody');
-    tbody.innerHTML = '';
-    SLOTS.forEach((slot, si) => {
-        const tr = document.createElement('tr');
+    function applySelectStyle(sel) {
+        const opt  = OPTIONS.find(o => o.label === sel.value);
+        sel.className = opt && opt.role ? `role-${opt.role}` : '';
+    }
 
-        const tdLabel = document.createElement('td');
-        tdLabel.className = 'col-horario';
-        let inner = slot.label;
-        if (slot.htpc) {
-            inner += ' <span class="htpc-badge">HTPC</span>';
-            inner += '<span class="opt-badge">Opcional · Seg – Qui</span>';
+    function renderCell(si, di) {
+        const sel = document.getElementById(`${p}-sel-${si}-${di}`);
+        if (!sel) return;
+        sel.value = state[key(si, di)] || '';
+        applySelectStyle(sel);
+    }
+
+    function updateCards() {
+        let ori = 0;
+        slots.forEach((slot, si) => {
+            DAYS.forEach((_, di) => {
+                if (isDisabled(si, di)) return;
+                const opt = OPTIONS.find(o => o.label === (state[key(si, di)] || ''));
+                if (opt && opt.role === 'ori') ori += slot.hours;
+            });
+        });
+
+        g('h-ori').textContent   = toHM(ori);
+        g('bar-ori').style.width = Math.min(ori / META_ORI * 100, 100) + '%';
+        const st = g('status-ori');
+        const ex = g('excedente-ori');
+        if (ori >= META_ORI) {
+            st.textContent = '✔ Meta atingida';
+            st.className   = 'card-status ok';
+            const e = ori - META_ORI;
+            ex.textContent = e > 0 ? `⚠ Excedente: ${toHM(e)}` : '';
+        } else {
+            st.textContent = `Faltam ${toHM(META_ORI - ori)}`;
+            st.className   = 'card-status falta';
+            ex.textContent = '';
         }
-        tdLabel.innerHTML = inner;
-        tr.appendChild(tdLabel);
+    }
 
-        DAYS.forEach((_, di) => {
-            const td = document.createElement('td');
-            if (isDisabled(si, di)) {
-                td.className = 'cell-disabled';
-                td.innerHTML = '<span>—</span>';
-            } else {
-                td.className = 'cell';
-                td.id = `c-${si}-${di}`;
+    function buildTable() {
+        const hr = g('header-row');
+        hr.innerHTML = '<th>Horário</th>';
+        DAYS.forEach(d => {
+            const th = document.createElement('th');
+            th.textContent = d;
+            hr.appendChild(th);
+        });
 
-                const sel = document.createElement('select');
-                sel.id = `s-${si}-${di}`;
+        const tbody = g('tbody');
+        tbody.innerHTML = '';
+        slots.forEach((slot, si) => {
+            const tr = document.createElement('tr');
 
-                // Grupo vazio
-                const optEmpty = document.createElement('option');
-                optEmpty.value = '';
-                optEmpty.textContent = '—';
-                sel.appendChild(optEmpty);
-
-                // Grupo Professora
-                const grpProf = document.createElement('optgroup');
-                grpProf.label = 'Professora';
-                OPTIONS.filter(o => o.role === 'prof').forEach(o => {
-                    const opt = document.createElement('option');
-                    opt.value = o.label;
-                    opt.textContent = o.label;
-                    grpProf.appendChild(opt);
-                });
-                sel.appendChild(grpProf);
-
-                // Grupo Orientadora
-                const grpOri = document.createElement('optgroup');
-                grpOri.label = 'Orientadora';
-                OPTIONS.filter(o => o.role === 'ori').forEach(o => {
-                    const opt = document.createElement('option');
-                    opt.value = o.label;
-                    opt.textContent = o.label;
-                    grpOri.appendChild(opt);
-                });
-                sel.appendChild(grpOri);
-
-                sel.addEventListener('change', () => {
-                    state[key(si, di)] = sel.value;
-                    applySelectStyle(sel);
-                    updateCards();
-                    saveState();
-                });
-
-                td.appendChild(sel);
+            const tdLabel = document.createElement('td');
+            tdLabel.className = 'col-horario';
+            let inner = slot.label;
+            if (slot.htpc) {
+                inner += ' <span class="htpc-badge">HTPC</span>';
+                inner += '<span class="opt-badge">Opcional · Seg – Qui</span>';
             }
-            tr.appendChild(td);
+            tdLabel.innerHTML = inner;
+            tr.appendChild(tdLabel);
+
+            DAYS.forEach((_, di) => {
+                const td = document.createElement('td');
+                if (isDisabled(si, di)) {
+                    td.className = 'cell-disabled';
+                    td.innerHTML = '<span>—</span>';
+                } else {
+                    td.className = 'cell';
+
+                    const sel = document.createElement('select');
+                    sel.id = `${p}-sel-${si}-${di}`;
+
+                    const optEmpty = document.createElement('option');
+                    optEmpty.value = '';
+                    optEmpty.textContent = '—';
+                    sel.appendChild(optEmpty);
+
+                    const grpProf = document.createElement('optgroup');
+                    grpProf.label = 'Professora';
+                    OPTIONS.filter(o => o.role === 'prof').forEach(o => {
+                        const opt = document.createElement('option');
+                        opt.value = o.label;
+                        opt.textContent = o.label;
+                        grpProf.appendChild(opt);
+                    });
+                    sel.appendChild(grpProf);
+
+                    const grpOri = document.createElement('optgroup');
+                    grpOri.label = 'Orientadora';
+                    OPTIONS.filter(o => o.role === 'ori').forEach(o => {
+                        const opt = document.createElement('option');
+                        opt.value = o.label;
+                        opt.textContent = o.label;
+                        grpOri.appendChild(opt);
+                    });
+                    sel.appendChild(grpOri);
+
+                    sel.addEventListener('change', () => {
+                        state[key(si, di)] = sel.value;
+                        applySelectStyle(sel);
+                        updateCards();
+                        saveAll();
+                    });
+
+                    td.appendChild(sel);
+                }
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
         });
-
-        tbody.appendChild(tr);
-    });
-}
-
-function applySelectStyle(sel) {
-    const val = sel.value;
-    const opt = OPTIONS.find(o => o.label === val);
-    const role = opt ? opt.role : null;
-    sel.className = role ? `role-${role}` : '';
-}
-
-function renderCell(si, di) {
-    const sel = document.getElementById(`s-${si}-${di}`);
-    if (!sel) return;
-    sel.value = state[key(si, di)] || '';
-    applySelectStyle(sel);
-}
-
-function updateCards() {
-    let ori = 0, prof = 0;
-    SLOTS.forEach((slot, si) => {
-        DAYS.forEach((_, di) => {
-            if (isDisabled(si, di)) return;
-            const val = state[key(si, di)] || '';
-            const opt = OPTIONS.find(o => o.label === val);
-            if (!opt || !opt.role) return;
-            if (opt.role === 'ori')  ori  += slot.hours;
-            if (opt.role === 'prof') prof += slot.hours;
-        });
-    });
-
-    document.getElementById('h-orientadora').textContent   = toHM(ori);
-    document.getElementById('bar-orientadora').style.width = Math.min(ori / META_ORI * 100, 100) + '%';
-    const statusOri      = document.getElementById('status-orientadora');
-    const excedenteOri   = document.getElementById('excedente-orientadora');
-    if (ori >= META_ORI) {
-        statusOri.textContent = '✔ Meta atingida';
-        statusOri.className = 'card-status ok';
-        const excessoOri = ori - META_ORI;
-        excedenteOri.textContent = excessoOri > 0 ? `⚠ Excedente: ${toHM(excessoOri)}` : '';
-    } else {
-        statusOri.textContent = `Faltam ${toHM(META_ORI - ori)}`;
-        statusOri.className = 'card-status falta';
-        excedenteOri.textContent = '';
     }
 
-    document.getElementById('h-professora').textContent   = toHM(prof);
-    document.getElementById('bar-professora').style.width = Math.min(prof / META_PROF * 100, 100) + '%';
-    const statusProf     = document.getElementById('status-professora');
-    const excedenteProf  = document.getElementById('excedente-professora');
-    if (prof >= META_PROF) {
-        statusProf.textContent = '✔ Meta atingida';
-        statusProf.className = 'card-status ok';
-        const excessoProf = prof - META_PROF;
-        excedenteProf.textContent = excessoProf > 0 ? `⚠ Excedente: ${toHM(excessoProf)}` : '';
-    } else {
-        statusProf.textContent = `Faltam ${toHM(META_PROF - prof)}`;
-        statusProf.className = 'card-status falta';
-        excedenteProf.textContent = '';
+    function refreshAll() {
+        buildSlots();
+        buildTable();
+        slots.forEach((_, si) => DAYS.forEach((_, di) => {
+            if (!isDisabled(si, di)) renderCell(si, di);
+        }));
+        updateCards();
+        saveAll();
     }
 
-    const total = ori + prof;
-    document.getElementById('h-total').textContent   = toHM(total);
-    document.getElementById('bar-total').style.width = Math.min(total / META_TOTAL * 100, 100) + '%';
-    const statusTotal    = document.getElementById('status-total');
-    const excedenteTotal = document.getElementById('excedente-total');
-    if (total >= META_TOTAL) {
-        statusTotal.textContent = '✔ Meta atingida';
-        statusTotal.className   = 'card-status ok';
-        const excesso = total - META_TOTAL;
-        excedenteTotal.textContent = excesso > 0 ? `⚠ Excedente: ${toHM(excesso)}` : '';
-    } else {
-        statusTotal.textContent = `Faltam ${toHM(META_TOTAL - total)}`;
-        statusTotal.className   = 'card-status falta';
-        excedenteTotal.textContent = '';
-    }
-}
+    ['fim-manha', 'inicio-tarde', 'fim-tarde'].forEach(id =>
+        g(id).addEventListener('change', refreshAll)
+    );
 
-document.getElementById('fim-manha').addEventListener('change', refreshAll);
-document.getElementById('inicio-tarde').addEventListener('change', refreshAll);
+    // Initial build so DOM exists before loadAll()
+    buildSlots();
+    buildTable();
 
-async function loadState() {
-    try {
-        const res = await fetch('/load');
-        if (res.ok) {
-            state = await res.json();
-            // Restaurar horários salvos
-            if (state.__fimManha)    document.getElementById('fim-manha').value    = state.__fimManha;
-            if (state.__inicioTarde) document.getElementById('inicio-tarde').value = state.__inicioTarde;
-            SLOTS = buildSlots();
+    return {
+        init(saved) {
+            state = saved || {};
+            if (state.__fimManha)    g('fim-manha').value    = state.__fimManha;
+            if (state.__inicioTarde) g('inicio-tarde').value = state.__inicioTarde;
+            if (state.__fimTarde)    g('fim-tarde').value    = state.__fimTarde;
+            buildSlots();
             buildTable();
-            SLOTS.forEach((_, si) => DAYS.forEach((_, di) => {
+            slots.forEach((_, si) => DAYS.forEach((_, di) => {
                 if (!isDisabled(si, di)) renderCell(si, di);
             }));
             updateCards();
-        }
-    } catch(e) {}
+        },
+        getState() {
+            return Object.assign({}, state, {
+                __fimManha:    g('fim-manha').value,
+                __inicioTarde: g('inicio-tarde').value,
+                __fimTarde:    g('fim-tarde').value,
+            });
+        },
+    };
 }
 
-function saveState() {
-    state.__fimManha    = document.getElementById('fim-manha').value;
-    state.__inicioTarde = document.getElementById('inicio-tarde').value;
+const sch1 = createSchedule(1);
+const sch2 = createSchedule(2);
+
+function saveAll() {
     fetch('/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state)
+        body: JSON.stringify({ s1: sch1.getState(), s2: sch2.getState() }),
     });
 }
 
-buildTable();
-loadState();
+async function loadAll() {
+    try {
+        const res  = await fetch('/load');
+        if (!res.ok) return;
+        const data = await res.json();
+        sch1.init(data.s1 || {});
+        sch2.init(data.s2 || {});
+    } catch(e) {}
+}
+
+loadAll();
 </script>
 </body>
 </html>
